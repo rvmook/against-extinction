@@ -8,5 +8,6 @@ module.exports = function(taskName) {
 		// There's no watch task for Browserify. It's handling updates with Watchify
 		gulp.watch(config.styles.src, ['styles']);
 		gulp.watch(config.copyStaticAssets.src, ['copyStaticAssets']);
+		gulp.watch(config.html.src, ['html']);
 	});
 };
