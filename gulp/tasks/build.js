@@ -1,4 +1,5 @@
 var gulp = require('gulp'),
+	browserSync = require('../util/browserSync'),
 	runSequence = require('run-sequence');
 
 module.exports = function(taskName) {
@@ -12,6 +13,11 @@ module.exports = function(taskName) {
 
 		if (!global.isProd) {
 
+			browserSync.init({
+				server: {
+					baseDir: "./dist"
+				}
+			});
 			args.push('watch');
 		}
 

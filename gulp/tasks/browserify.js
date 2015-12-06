@@ -9,6 +9,7 @@ var config = require('../config'),
 	watchify = require('watchify'),
 	browserify = require('browserify'),
 	uglify = require('gulp-uglify'),
+	browserSync = require('../util/browserSync'),
 	handleErrors = require('../util/handleErrors');
 
 
@@ -49,7 +50,8 @@ function buildScript(file) {
 			.pipe(gulpif(createSourcemap, sourcemaps.init()))
 			.pipe(gulpif(global.isProd, streamify(uglify(config.uglify))))
 			.pipe(gulpif(createSourcemap, sourcemaps.write('./')))
-			.pipe(gulp.dest(config.browserify.dest));
+			.pipe(gulp.dest(config.browserify.dest))
+			.pipe(gulpif(!global.isProd, browserSync.stream()))
 	}
 
 	return rebundle();
