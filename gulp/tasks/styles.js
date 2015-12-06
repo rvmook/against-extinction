@@ -8,8 +8,6 @@ module.exports = function(taskName) {
 
 	gulp.task(taskName, function () {
 
-		console.log('styles');
-
 		return gulp.src(config.styles.src)
 			.pipe(sass({
 				sourceComments: global.isProd ? 'none' : 'map',

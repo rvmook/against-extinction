@@ -8,7 +8,7 @@ module.exports = function(taskName) {
 		cb = cb || function (e) {
 		};
 
-		var args = ['styles', 'browserify', 'copyStaticAssets'];
+		var args = ['styles', 'html', 'browserify', 'copyStaticAssets'];
 
 		if (!global.isProd) {
 
