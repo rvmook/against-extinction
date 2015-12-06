@@ -1,0 +1,52 @@
+{
+  "name": "against-extinction",
+  "version": "0.0.0",
+  "description": "Gulp dependencies for Against Extinction development",
+  "repository": "https://github.com/rvmook/against-extinction",
+  "license": "MIT",
+  "author": {
+    "name": "Rick van Mook",
+    "email": "rick@rvmook.com",
+    "url": "http://rvmook.com/"
+  },
+  "jshintConfig": {
+    "bitwise": true,
+    "camelcase": true,
+    "curly": true,
+    "eqeqeq": true,
+    "forin": false,
+    "latedef": false,
+    "noarg": true,
+    "noempty": true,
+    "nonew": true,
+    "undef": true,
+    "quotmark": "single",
+    "maxparams": 4,
+    "maxdepth": 4,
+    "maxlen": 95,
+    "browser": true,
+    "devel": true,
+    "jquery": false,
+    "node": true
+  },
+  "devDependencies": {
+    "brfs": "^1.4.1",
+    "browserify": "^12.0.1",
+    "del": "^2.1.0",
+    "gulp": "^3.9.0",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-if": "^2.0.0",
+    "gulp-notify": "^2.2.0",
+    "gulp-sass": "^2.1.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-streamify": "^1.0.2",
+    "gulp-uglify": "^1.5.1",
+    "gulp-util": "^3.0.7",
+    "lodash": "^3.10.1",
+    "run-sequence": "^1.1.5",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.6.1",
+    "yargs": "^3.31.0"
+  }
+}
