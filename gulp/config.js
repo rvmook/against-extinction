@@ -29,7 +29,7 @@ var	styles = {
 	},
 	copyStaticAssets = {
 		src:[
-			'src/assets/**/**',
+			'src/assets/**',
 			'!src/assets/scripts/**',
 			'!src/assets/styles/**'
 		],
@@ -37,13 +37,11 @@ var	styles = {
 	},
 	copyScripts = {
 		src: [
-			browserify.root + browserify.bundleName,
-			browserify.root + browserify.bundleName + '.map',
-			'!' + browserify.root+'main.js'
+			'src/assets/scripts/libs/phaser.js'
 		],
-		dest: './dist/assets/scripts'
+		dest: './dist/assets/scripts/libs'
 	},
-	clean = ['dist/assets'];
+	clean = ['dist/**'];
 
 exports.clean = clean;
 exports.html = html;
