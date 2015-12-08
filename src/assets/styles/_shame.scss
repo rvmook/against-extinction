@@ -7,3 +7,62 @@
 //
 // --------------------------------------------------------------------
 
+body, html {
+
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	background-color: #e1fff9;
+}
+
+.wrapper {
+
+	height: 230px;
+	width: 1200px;
+	margin: -70px auto 0;
+	position: relative;
+	top: 50%;
+	border-bottom: 2px solid #000;
+}
+
+.bg {
+
+	position: absolute;
+	width: 1100px;
+	height: 100%;
+	left: 50px;
+	bottom: 0;
+	background: no-repeat url('../images/bg.png') bottom center;
+}
+
+.dino {
+
+	position: absolute;
+	bottom: 0;
+	left: 93px;
+	width: 138px;
+	height: 133px;
+	background: url('../images/dino.png') no-repeat bottom left;
+	transition: all 1200ms;
+
+	.is-fighting & {
+
+		transform: translateX(400px);
+	}
+}
+
+.turtle {
+
+	position: absolute;
+	bottom: 0;
+	right: 137px;
+	width: 167px;
+	height: 87px;
+	transition: all 1200ms;
+	background: url('../images/turtle.png') no-repeat bottom left;
+
+	.is-fighting & {
+
+		transform: translateX(-400px);
+	}
+}
