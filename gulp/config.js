@@ -37,7 +37,7 @@ var	styles = {
 	},
 	copyScripts = {
 		src: [
-			'src/assets/scripts/libs/phaser.js'
+			'src/assets/scripts/libs/**.js'
 		],
 		dest: './dist/assets/scripts/libs'
 	},
