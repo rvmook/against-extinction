@@ -1,0 +1,6 @@
+exports.ACTION_UP = 'ACTION_UP';
+exports.ACTION_DOWN = 'ACTION_DOWN';
+exports.ACTION_LEFT = 'ACTION_LEFT';
+exports.ACTION_RIGHT = 'ACTION_RIGHT';
+
+
