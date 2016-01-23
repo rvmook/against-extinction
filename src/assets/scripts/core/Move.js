@@ -1,13 +1,14 @@
 var Q = require('../utils/kew'),
-	signalBus = require('./signalBus');
+	Signal = require('../utils/signals');
 
-module.exports = function(action, delay) {
+module.exports = function(action, delay, hasLogs) {
 
 	var STATE_TOO_SOON = 0,
 		STATE_ON_TIME = 1;
 
 	var _timer,
 		_deferred,
+		_stateIsOnTimeSignal = new Signal(),
 		_currentState = STATE_TOO_SOON,
 		_requestedAction = action,
 		_delay = delay;
@@ -17,9 +18,6 @@ module.exports = function(action, delay) {
 
 		_deferred = Q.defer();
 
-		console.log('Ready?');
-
-		signalBus.ACTION_FIRED.add(onActionFired);
 		startTimer(_delay, onDelayFinished);
 
 		return _deferred.promise;
@@ -27,11 +25,11 @@ module.exports = function(action, delay) {
 
 	function onDelayFinished() {
 
-		console.log('FIRE!', _requestedAction);
 		_currentState = STATE_ON_TIME;
+		_stateIsOnTimeSignal.dispatch(_requestedAction);
 	}
 
-	function onActionFired(firedAction) {
+	function fireAction(firedAction) {
 
 		killTimer();
 
@@ -49,9 +47,13 @@ module.exports = function(action, delay) {
 		}
 	}
 
+	function getRequestedAction() {
+
+		return _requestedAction;
+	}
+
 	function destroy() {
 
-		signalBus.ACTION_FIRED.remove(onActionFired);
 		killTimer();
 	}
 
@@ -65,6 +67,9 @@ module.exports = function(action, delay) {
 		_timer = setTimeout(callback, delay);
 	}
 
+	this.stateIsOnTimeSignal = _stateIsOnTimeSignal;
+	this.getRequestedAction = getRequestedAction;
+	this.fireAction = fireAction;
 	this.execute = execute;
 	this.destroy = destroy;
 };
