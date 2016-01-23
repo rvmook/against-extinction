@@ -1,4 +1,5 @@
-var signalBus = require('./signalBus');
+var Q = require('../utils/kew'),
+	signalBus = require('./signalBus');
 
 module.exports = function(action, delay) {
 
@@ -6,6 +7,7 @@ module.exports = function(action, delay) {
 		STATE_ON_TIME = 1;
 
 	var _timer,
+		_deferred,
 		_currentState = STATE_TOO_SOON,
 		_requestedAction = action,
 		_delay = delay;
@@ -13,20 +15,14 @@ module.exports = function(action, delay) {
 
 	function execute() {
 
-		/*
+		_deferred = Q.defer();
 
-			Show ready
-			Start delay
-			Show action
-			Start duration
-			Show too late
-
-		 */
-
-		console.log('ready?', _delay);
+		console.log('Ready?');
 
 		signalBus.ACTION_FIRED.add(onActionFired);
 		startTimer(_delay, onDelayFinished);
+
+		return _deferred.promise;
 	}
 
 	function onDelayFinished() {
@@ -41,15 +37,15 @@ module.exports = function(action, delay) {
 
 		if(_currentState === STATE_TOO_SOON) {
 
-			console.log('too soon!');
+			_deferred.reject('too soon!');
 
 		} else if(firedAction !== _requestedAction) {
 
-			console.log('wrong action!');
+			_deferred.reject('wrong action!');
 
 		} else {
 
-			console.log('success!');
+			_deferred.resolve('success!');
 		}
 	}
 
@@ -65,8 +61,6 @@ module.exports = function(action, delay) {
 	}
 
 	function startTimer(delay, callback) {
-
-		console.log('startTimer', delay);
 
 		_timer = setTimeout(callback, delay);
 	}

@@ -8,8 +8,6 @@ function init() {
 
 function onKeyDown(e) {
 
-	console.log('e.keyCode', e.keyCode);
-
 	var action;
 
 	switch(e.keyCode) {

@@ -1,13 +1,11 @@
 var actionHandler = require('./core/actionHandler'),
 	constants = require('./core/constants'),
-	Move = require('./core/Move');
+	ComboChain = require('./core/ComboChain');
 
 
-var move1 = new Move(constants.ACTION_DOWN, 1000);
+var chain = new ComboChain(5, 1000);
 
 
 actionHandler.init();
 
-
-
-move1.execute();
+chain.start();
