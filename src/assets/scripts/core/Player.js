@@ -39,6 +39,11 @@ module.exports = function() {
 
 		var i = 0;
 
+		if(_currentMove) {
+
+			_currentMove.destroy();
+		}
+
 		for(i; i < _chain.length; i++) {
 
 			_chain[i].destroy();
@@ -101,7 +106,7 @@ module.exports = function() {
 
 		if(_isAutomatedPlayer) {
 
-			shouldFail = Math.random() > _chanceOfFailing;
+			shouldFail = Math.random() < _chanceOfFailing;
 
 			if(shouldFail) {
 
@@ -134,6 +139,9 @@ module.exports = function() {
 		if(!_isAutomatedPlayer) {
 
 			console.log('Woops', message);
+		} else {
+
+			console.log('AI missed!');
 		}
 
 		addRandomMove();
