@@ -1,4 +1,5 @@
 var Q = require('../utils/kew'),
+	writeInDiv = require('../utils/writeInDiv'),
 	Move = require('./Move'),
 	constants = require('./constants'),
 	signalBus = require('./signalBus'),
@@ -7,6 +8,7 @@ var Q = require('../utils/kew'),
 module.exports = function() {
 
 	var _deferred,
+		_classPostFix,
 		_chanceOfFailing,
 		_delay,
 		_chain,
@@ -14,11 +16,12 @@ module.exports = function() {
 		_isAutomatedPlayer;
 
 
-	function init(numMoves, delay, isAutomatedPlayer, chanceOfFailing) {
+	function init(divClass, numMoves, delay, isAutomatedPlayer, chanceOfFailing) {
 
 		var i = 0;
 
 		_deferred = Q.defer();
+		_classPostFix = divClass;
 		_chain = [];
 		_delay = delay;
 		_chanceOfFailing = chanceOfFailing;
@@ -73,6 +76,8 @@ module.exports = function() {
 
 		validateChain();
 
+		writeInDiv(_classPostFix, 'Get READY!');
+
 		return _deferred.promise;
 	}
 
@@ -119,7 +124,7 @@ module.exports = function() {
 
 		} else {
 
-			console.log('FIRE!', requestedAction);
+			writeInDiv(_classPostFix, 'FIRE! ' + requestedAction);
 		}
 	}
 
@@ -127,10 +132,11 @@ module.exports = function() {
 
 		if(_isAutomatedPlayer) {
 
-			console.log('AI has ' + _chain.length + ' moves left');
+			writeInDiv(_classPostFix, 'AI has ' + _chain.length + ' moves left');
+
 		} else {
 
-			console.log('Got it!');
+			writeInDiv(_classPostFix, 'Got it!');
 		}
 	}
 
@@ -138,10 +144,11 @@ module.exports = function() {
 
 		if(!_isAutomatedPlayer) {
 
-			console.log('Woops', message);
+			writeInDiv(_classPostFix, 'Woops, ' + message);
+
 		} else {
 
-			console.log('AI missed!');
+			writeInDiv(_classPostFix, 'AI missed!');
 		}
 
 		addRandomMove();

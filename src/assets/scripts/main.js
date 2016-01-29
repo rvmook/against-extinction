@@ -1,5 +1,6 @@
 var actionHandler = require('./core/actionHandler'),
 	signalBus = require('./core/signalBus'),
+	writeInDiv = require('./utils/writeInDiv'),
 	constants = require('./core/constants'),
 	Player = require('./core/Player');
 
@@ -8,6 +9,7 @@ var humanPlayer = new Player(),
 	aiPlayer = new Player(),
 	isPlaying = false;
 
+writeInDiv('general', 'Press `ENTER` to start');
 actionHandler.init();
 
 signalBus.ACTION_FIRED.add(onActionFired);
@@ -29,10 +31,11 @@ function onActionFired(action) {
 
 function start() {
 
-	console.log('start');
+	writeInDiv('general', '');
+
 	isPlaying = true;
-	humanPlayer.init(5, 1000, false);
-	aiPlayer.init(5, 2000, true, 0.1);
+	humanPlayer.init('player', 5, 1000, false);
+	aiPlayer.init('ai', 5, 2000, true, 0.1);
 
 	humanPlayer.start()
 		.then(function(){
@@ -45,21 +48,21 @@ function start() {
 		}).fail(onError);
 }
 
-
-
-
 function onError(e) {
 	console.error(e);
 }
 
 function gameOver(playerWon) {
 
+	writeInDiv('player', '');
+	writeInDiv('ai', '');
 	if(playerWon) {
 
-		console.log('You won!');
+		writeInDiv('general', 'You won!<br>Press `ENTER` to replay');
+
 	} else {
 
-		console.log('You lost...');
+		writeInDiv('general', 'You lost...<br>Press `ENTER` to replay');
 	}
 
 	stop();
@@ -67,7 +70,6 @@ function gameOver(playerWon) {
 
 function stop() {
 
-	console.log('stop');
 	isPlaying = false;
 
 	humanPlayer.destroy();
