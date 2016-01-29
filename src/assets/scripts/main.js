@@ -7,7 +7,25 @@ var actionHandler = require('./core/actionHandler'),
 
 var humanPlayer = new Player(),
 	aiPlayer = new Player(),
-	isPlaying = false;
+	isPlaying = false,
+	datGuiProps = new function() {
+
+		this.moves = 5;
+		this.playerDelay = 1000;
+		this.aiDelay = 2000;
+		this.aiMissChance = 0.1;
+
+		this.start = start;
+		this.stop = stop;
+	}();
+
+var gui = new dat.GUI();
+gui.add(datGuiProps, 'moves', 0, 10).step(1);
+gui.add(datGuiProps, 'playerDelay', 0, 5000).step(100);
+gui.add(datGuiProps, 'aiDelay', 0, 5000).step(100);
+gui.add(datGuiProps, 'aiMissChance', 0, 1).step(0.05);
+gui.add(datGuiProps, 'start');
+gui.add(datGuiProps, 'stop');
 
 writeInDiv('general', 'Press `ENTER` to start');
 actionHandler.init();
@@ -31,11 +49,16 @@ function onActionFired(action) {
 
 function start() {
 
+	if(isPlaying) {
+
+		stop();
+	}
+
 	writeInDiv('general', '');
 
 	isPlaying = true;
-	humanPlayer.init('player', 5, 1000, false);
-	aiPlayer.init('ai', 5, 2000, true, 0.1);
+	humanPlayer.init('player', datGuiProps.moves, datGuiProps.playerDelay, false);
+	aiPlayer.init('ai', datGuiProps.moves, datGuiProps.aiDelay, true, datGuiProps.aiMissChance);
 
 	humanPlayer.start()
 		.then(function(){
