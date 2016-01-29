@@ -12,6 +12,8 @@ function onKeyDown(e) {
 
 	switch(e.keyCode) {
 
+		case 13: action = constants.ACTION_ENTER; break;
+
 		case 38: action = constants.ACTION_UP; break;
 		case 40: action = constants.ACTION_DOWN; break;
 		case 37: action = constants.ACTION_LEFT; break;
