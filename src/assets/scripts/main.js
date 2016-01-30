@@ -11,9 +11,8 @@ var humanPlayer = new Player(),
 	datGuiProps = new function() {
 
 		this.moves = 5;
-		this.playerDelay = 1000;
 		this.aiDelay = 2000;
-		this.aiMissChance = 0.1;
+		this.aiMissChance = 0;
 
 		this.start = start;
 		this.stop = stop;
@@ -21,7 +20,6 @@ var humanPlayer = new Player(),
 
 var gui = new dat.GUI();
 gui.add(datGuiProps, 'moves', 0, 10).step(1);
-gui.add(datGuiProps, 'playerDelay', 0, 5000).step(100);
 gui.add(datGuiProps, 'aiDelay', 0, 5000).step(100);
 gui.add(datGuiProps, 'aiMissChance', 0, 1).step(0.05);
 gui.add(datGuiProps, 'start');
@@ -57,7 +55,7 @@ function start() {
 	writeInDiv('general', '');
 
 	isPlaying = true;
-	humanPlayer.init('player', datGuiProps.moves, datGuiProps.playerDelay, false);
+	humanPlayer.init('player', datGuiProps.moves, 0, false);
 	aiPlayer.init('ai', datGuiProps.moves, datGuiProps.aiDelay, true, datGuiProps.aiMissChance);
 
 	humanPlayer.start()

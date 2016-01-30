@@ -8,6 +8,8 @@ var Q = require('../utils/kew'),
 module.exports = function() {
 
 	var _deferred,
+		_allMovesString,
+		_numMoves,
 		_classPostFix,
 		_chanceOfFailing,
 		_delay,
@@ -18,24 +20,35 @@ module.exports = function() {
 
 	function init(divClass, numMoves, delay, isAutomatedPlayer, chanceOfFailing) {
 
-		var i = 0;
-
+		_numMoves = numMoves;
 		_deferred = Q.defer();
 		_classPostFix = divClass;
-		_chain = [];
 		_delay = delay;
 		_chanceOfFailing = chanceOfFailing;
 		_isAutomatedPlayer = isAutomatedPlayer;
 
-		for(i; i < numMoves; i++) {
-
-			addRandomMove();
-		}
+		createCombo();
 
 		if(!_isAutomatedPlayer) {
 
 			signalBus.ACTION_FIRED.add(onActionFired);
 		}
+	}
+
+	function createCombo() {
+
+		var i = 0;
+
+		_allMovesString = '';
+
+		_chain = [];
+
+		for(i; i < _numMoves; i++) {
+
+			_allMovesString += addRandomMove() + ', ';
+		}
+
+		_allMovesString += '<br>';
 	}
 
 	function destroy() {
@@ -70,6 +83,8 @@ module.exports = function() {
 			newMove = new Move(randomAction, _delay);
 
 		_chain.push(newMove);
+
+		return randomAction;
 	}
 
 	function start() {
@@ -124,7 +139,7 @@ module.exports = function() {
 
 		} else {
 
-			writeInDiv(_classPostFix, 'FIRE! ' + requestedAction);
+			writeInDiv(_classPostFix, _allMovesString);
 		}
 	}
 
@@ -136,22 +151,22 @@ module.exports = function() {
 
 		} else {
 
-			writeInDiv(_classPostFix, 'Got it!');
+			writeInDiv(_classPostFix, _allMovesString + 'Got it!');
 		}
 	}
 
 	function moveFailed(message) {
 
+		createCombo();
+
 		if(!_isAutomatedPlayer) {
 
-			writeInDiv(_classPostFix, 'Woops, ' + message);
+			writeInDiv(_classPostFix, _allMovesString + 'Woops, ' + message);
 
 		} else {
 
 			writeInDiv(_classPostFix, 'AI missed!');
 		}
-
-		addRandomMove();
 	}
 
 	function moveFinished() {
