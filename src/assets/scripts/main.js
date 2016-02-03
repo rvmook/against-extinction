@@ -1,4 +1,4 @@
-var actionHandler = require('./core/actionHandler'),
+var keyHandler = require('./core/keyHandler'),
 	signalBus = require('./core/signalBus'),
 	writeInDiv = require('./utils/writeInDiv'),
 	constants = require('./core/constants'),
@@ -26,13 +26,13 @@ gui.add(datGuiProps, 'start');
 gui.add(datGuiProps, 'stop');
 
 writeInDiv('general', 'Press `ENTER` to start');
-actionHandler.init();
+keyHandler.init();
 
-signalBus.ACTION_FIRED.add(onActionFired);
+signalBus.MOVE_FIRED.add(onMoveFired);
 
-function onActionFired(action) {
+function onMoveFired(move) {
 
-	if(action === constants.ACTION_ENTER) {
+	if(move === constants.MOVE_ENTER) {
 
 		if(!isPlaying) {
 
