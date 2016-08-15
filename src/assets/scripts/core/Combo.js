@@ -1,68 +1,54 @@
-var Q = require('../utils/kew'),
-	constants = require('./constants'),
-	Signal = require('../utils/signals');
+var Q = require('../libs/kew'),
+	Signal = require('../libs/signals');
 
-module.exports = function(size, delay) {
+var counter = 0;
+
+module.exports = function(moves, showDelay, hideDelay) {
 
 	var STATE_TOO_SOON = 0,
-		STATE_ON_TIME = 1,
-		COMBO_SIZE = size;
+		STATE_ON_TIME = 1;
 
-	var _timer,
-		_deferred,
-		_moves,
+	var id = counter++;
+
+	var _deferred,
+		_moves = moves,
 		_currentMove,
-		_moveUpdated = new Signal(),
+		_isOnTime = new Signal(),
 		_currentState = STATE_TOO_SOON,
-		_delay = delay;
+		_showDelay = showDelay || 0,
+		_hideDelay = hideDelay || 0,
+		_showTimer,
+		_hideTimer;
+
+	console.log('id', id, 'moves', moves, 'showDelay', showDelay, 'hideDelay', hideDelay);
 
 
-	init();
-
-	function init() {
-
-		_moves = createMoves();
-		nextMove();
-	}
-
-	function createMoves() {
-
-		var i = 0,
-			moves = [],
-			move;
-
-		for(i; i < COMBO_SIZE; i++) {
-
-			move = createRandomMove();
-
-			moves.push(move);
-		}
-
-		return moves;
-	}
-
-	function createRandomMove() {
-
-		var randomMove = sample(constants.ALL_MOVES);
-
-		return randomMove;
-	}
-
-
-	function execute() {
+	function start() {
 
 		_deferred = Q.defer();
-
-		startTimer(_delay, onDelayFinished);
+		nextMove();
 
 		return _deferred.promise;
 	}
 
-	function onDelayFinished() {
+	function onShowDelayFinished() {
+
+		if(hideDelay >= 0) {
+
+			_hideTimer = startTimer(_hideDelay, onTime);
+
+		} else {
+
+			onTime();
+		}
+	}
+
+	function onTime() {
 
 		_currentState = STATE_ON_TIME;
 
-		_moveUpdated.dispatch(_currentMove);
+		console.log('onTime', _currentMove, id);
+		_isOnTime.dispatch(_currentMove);
 	}
 
 	function nextMove() {
@@ -72,24 +58,27 @@ module.exports = function(size, delay) {
 		if(!_currentMove) {
 
 			_deferred.resolve('success!');
+
+		} else {
+
+			_showTimer = startTimer(_showDelay, onShowDelayFinished);
 		}
 	}
 
-	function fireMove(firedMove) {
+	function executeMove(firedMove) {
 
 		killTimer();
 
 		if(_currentState === STATE_TOO_SOON) {
 
-			_deferred.reject('too soon!');
+			console.log('too soon', id);
 
 		} else if(firedMove !== _currentMove) {
 
-			_deferred.reject('wrong move!');
+			console.log('wrong move', id);
+			// _deferred.reject('wrong move!');
 
 		} else {
-
-			console.log('next move');
 
 			nextMove();
 		}
@@ -97,21 +86,27 @@ module.exports = function(size, delay) {
 
 	function destroy() {
 
+		_isOnTime.removeAll();
+		_isOnTime = null;
 		killTimer();
 	}
 
 	function killTimer() {
 
-		clearTimeout(_timer);
+		clearTimeout(_showTimer);
+		clearTimeout(_hideTimer);
 	}
 
 	function startTimer(delay, callback) {
 
-		_timer = setTimeout(callback, delay);
+		return setTimeout(callback, delay);
 	}
 
-	this.moveUpdated = _moveUpdated;
-	this.fireMove = fireMove;
-	this.execute = execute;
+	this.isOnTime = _isOnTime;
+	this.executeMove = executeMove;
+	this.start = start;
 	this.destroy = destroy;
+	this.getId = function() {
+		return id;
+	}
 };
