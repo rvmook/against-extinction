@@ -6,7 +6,7 @@ exports.totalCombos = 5;
 exports.comboSize = 3;
 
 // delay before the combo shows
-exports.comboShowDelay = 1000;
+exports.comboShowDelay = 500;
 
 // delay before the combo hides (so it'll be memory based)
 exports.comboHideDelay = 1000;

@@ -6,16 +6,22 @@ module.exports = function(player, enemy, comboSettings){
 
 	var _comboSequence = createComboSequence(
 		comboSettings.total,
-		comboSettings.size,
-		comboSettings.showDelay,
-		comboSettings.hideDelay
+		comboSettings.size
 	);
 
 	function init() {
 
 		return Q.all(
-			player.init(_comboSequence.slice(0)),
-			enemy.init(_comboSequence.slice(0))
+			player.init(
+				_comboSequence.slice(0),
+				comboSettings.showDelay,
+				comboSettings.hideDelay
+			),
+			enemy.init(
+				_comboSequence.slice(0),
+				comboSettings.showDelay,
+				comboSettings.hideDelay
+			)
 		)
 	}
 
@@ -38,7 +44,7 @@ module.exports = function(player, enemy, comboSettings){
 		return deferred.promise;
 	}
 
-	function createComboSequence(total, size, showDelay, hideDelay) {
+	function createComboSequence(total, size) {
 
 
 		var sequence = [],
@@ -46,7 +52,7 @@ module.exports = function(player, enemy, comboSettings){
 
 		for(i = 0; i < total;i++) {
 
-			sequence.push(createComboConfig(size, showDelay, hideDelay));
+			sequence.push(createComboConfig(size));
 		}
 
 		return sequence;
@@ -56,12 +62,10 @@ module.exports = function(player, enemy, comboSettings){
 	this.start = start;
 };
 
-function createComboConfig(size, showDelay, hideDelay) {
+function createComboConfig(size) {
 
 	return {
-		moves: createMoves(),
-		showDelay: showDelay,
-		hideDelay: hideDelay
+		moves: createMoves()
 	};
 
 	function createRandomMove() {
