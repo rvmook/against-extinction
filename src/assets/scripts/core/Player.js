@@ -1,166 +1,143 @@
-var Q = require('../utils/kew'),
-	writeInDiv = require('../utils/writeInDiv'),
-	Move = require('./Move'),
-	constants = require('./constants'),
-	signalBus = require('./signalBus'),
-	sample = require('../utils/sampleArray');
+var Signal = require('../libs/signals'),
+	Combo = require('./Combo');
 
-module.exports = function() {
+module.exports = function(id, _controller){
 
-	var _deferred,
-		_classPostFix,
-		_chanceOfFailing,
-		_delay,
-		_chain,
-		_currentMove,
-		_isAutomatedPlayer;
+	var _isOnTime,
+		_finished = new Signal(),
+		_showDelay,
+		_hideDelay,
+		_currentComboIndex,
+		_currentCombo,
+		_showTimeout,
+		_hideTimeout,
+		_combos;
 
+	function init(comboConfigs, showDelay, hideDelay) {
 
-	function init(divClass, numMoves, delay, isAutomatedPlayer, chanceOfFailing) {
+		var comboConfig,
+			i;
 
-		var i = 0;
+		_currentComboIndex = 0;
+		_isOnTime = !(_showDelay > 0 && _hideDelay > 0);
+		_combos = [];
+		_showDelay = showDelay;
+		_hideDelay = hideDelay;
 
-		_deferred = Q.defer();
-		_classPostFix = divClass;
-		_chain = [];
-		_delay = delay;
-		_chanceOfFailing = chanceOfFailing;
-		_isAutomatedPlayer = isAutomatedPlayer;
+		for(i = 0; i < comboConfigs.length; i++) {
 
-		for(i; i < numMoves; i++) {
+			comboConfig = comboConfigs[i];
 
-			addRandomMove();
+			_combos.push(new Combo(
+				comboConfig.moves.slice(0)
+			));
 		}
 
-		if(!_isAutomatedPlayer) {
-
-			signalBus.ACTION_FIRED.add(onActionFired);
-		}
-	}
-
-	function destroy() {
-
-		var i = 0;
-
-		if(_currentMove) {
-
-			_currentMove.destroy();
-		}
-
-		for(i; i < _chain.length; i++) {
-
-			_chain[i].destroy();
-		}
-
-		_chain = null;
-		signalBus.ACTION_FIRED.remove(onActionFired);
-	}
-
-	function onActionFired(firedAction) {
-
-		if(_currentMove) {
-
-			_currentMove.fireAction(firedAction);
-		}
-	}
-
-	function addRandomMove() {
-
-		var randomAction = sample(constants.ALL_ACTIONS),
-			newMove = new Move(randomAction, _delay);
-
-		_chain.push(newMove);
+		return _controller.init();
 	}
 
 	function start() {
 
-		validateChain();
-
-		writeInDiv(_classPostFix, 'Get READY!');
-
-		return _deferred.promise;
+		_controller.moveFired.add(onMoveFired);
+		nextCombo();
 	}
 
-	function validateChain() {
 
-		_currentMove = _chain.shift();
+	function destroy() {
 
-		if(_currentMove) {
+		killTimers();
+		_controller.destroy();
+		_controller.moveFired.remove(onMoveFired);
+	}
 
-			_currentMove.stateIsOnTimeSignal.add(onCurrentMoveIsReady);
-			executeMove();
+	function onMoveFired(move) {
+
+		if(_isOnTime) {
+
+			_currentCombo.executeMove(move);
 
 		} else {
 
-			_deferred.resolve();
+			console.log('too soon!');
+
+			killTimers();
+			_showTimeout = setTimeout(startTimerSequence, _showDelay);
 		}
 	}
 
-	function executeMove() {
+	function nextCombo() {
 
-		_currentMove.execute()
-			.then(moveExecuted)
-			.fail(moveFailed)
-			.fin(moveFinished)
-	}
+		if(_currentCombo) {
 
-	function onCurrentMoveIsReady() {
+			_currentCombo.destroy();
+		}
 
-		var requestedAction = _currentMove.getRequestedAction(),
-			shouldFail;
+		_currentCombo = _combos[_currentComboIndex];
 
-		if(_isAutomatedPlayer) {
+		_currentComboIndex++;
 
-			shouldFail = Math.random() < _chanceOfFailing;
 
-			if(shouldFail) {
+		if(!_currentCombo) {
 
-				_currentMove.fireAction();
-
-			} else {
-
-				_currentMove.fireAction(requestedAction);
-			}
+			console.log('DONE!');
+			_finished.dispatch();
 
 		} else {
 
-			writeInDiv(_classPostFix, 'FIRE! ' + requestedAction);
+			_currentCombo.finished.add(nextCombo);
+			_currentCombo.wrong.add(onWrong);
+			startTimerSequence();
 		}
 	}
 
-	function moveExecuted() {
+	function onWrong(){
 
-		if(_isAutomatedPlayer) {
+		console.log('wrong move!');
+		startCombo();
+	}
 
-			writeInDiv(_classPostFix, 'AI has ' + _chain.length + ' moves left');
+	function startTimerSequence() {
 
-		} else {
+		if(_showDelay > 0 || _hideDelay > 0) {
 
-			writeInDiv(_classPostFix, 'Got it!');
+			console.log('get ready...');
+		}
+
+		killTimers();
+		_isOnTime = false;
+		_showTimeout = setTimeout(startCombo, _showDelay);
+	}
+
+
+	function killTimers() {
+
+		clearTimeout(_showTimeout);
+		clearTimeout(_hideTimeout);
+	}
+
+	function startCombo() {
+
+
+		_currentCombo.start();
+
+		killTimers();
+		_hideTimeout = setTimeout(hideReady, _hideDelay);
+
+
+		function hideReady() {
+
+			killTimers();
+			_isOnTime = true;
+
+
+			_controller.isOnTime(_currentCombo);
+			console.log('go!');
 		}
 	}
 
-	function moveFailed(message) {
-
-		if(!_isAutomatedPlayer) {
-
-			writeInDiv(_classPostFix, 'Woops, ' + message);
-
-		} else {
-
-			writeInDiv(_classPostFix, 'AI missed!');
-		}
-
-		addRandomMove();
-	}
-
-	function moveFinished() {
-
-		_currentMove.destroy();
-		validateChain();
-	}
-
+	this.id = id;
 	this.init = init;
-	this.start = start;
 	this.destroy = destroy;
+	this.finished = _finished;
+	this.start = start;
 };
