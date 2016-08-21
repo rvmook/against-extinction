@@ -5,10 +5,10 @@ var HumanController = require('./controllers/HumanController'),
 	globals = require('./core/globals');
 
 
-var LEVEL_ONE_AI_DELAY = 100;
+var LEVEL_ONE_AI_DELAY = 1500;
 
-var playerA = new Player(new HumanController()),
-	playerB = new Player(new AIController(LEVEL_ONE_AI_DELAY)),
+var playerA = new Player('you', new HumanController()),
+	playerB = new Player('CPU', new AIController(LEVEL_ONE_AI_DELAY)),
 	level1 = new Level(playerA, playerB, {
 		total:globals.totalCombos,
 		size:globals.comboSize,
@@ -16,14 +16,13 @@ var playerA = new Player(new HumanController()),
 		hideDelay:globals.comboHideDelay
 	});
 
-level1.init()
-	.then(level1.start)
-	.then(function(winPlayer, losePlayer){
+level1.init();
+level1.finished.add(onFinished);
+level1.start();
 
+function onFinished(winner, loser) {
 
-		console.log('playerA won');
-	})
-	.fail(function(e){
+	console.log(winner.id, 'won,', loser.id, 'lost');
 
-		console.error('errer in level', e);
-	});
+	level1.destroy();
+}

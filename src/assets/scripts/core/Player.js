@@ -1,10 +1,10 @@
-var Q = require('../libs/kew'),
+var Signal = require('../libs/signals'),
 	Combo = require('./Combo');
 
-module.exports = function(_controller){
+module.exports = function(id, _controller){
 
 	var _isOnTime,
-		_deferred,
+		_finished = new Signal(),
 		_showDelay,
 		_hideDelay,
 		_currentComboIndex,
@@ -38,19 +38,15 @@ module.exports = function(_controller){
 
 	function start() {
 
-		_deferred = Q.defer();
-
 		_controller.moveFired.add(onMoveFired);
 		nextCombo();
-
-
-		return _deferred.promise;
 	}
 
 
 	function destroy() {
 
 		killTimers();
+		_controller.destroy();
 		_controller.moveFired.remove(onMoveFired);
 	}
 
@@ -84,7 +80,7 @@ module.exports = function(_controller){
 		if(!_currentCombo) {
 
 			console.log('DONE!');
-			_deferred.resolve('success!');
+			_finished.dispatch();
 
 		} else {
 
@@ -133,12 +129,15 @@ module.exports = function(_controller){
 			killTimers();
 			_isOnTime = true;
 
-			console.clear();
+
+			_controller.isOnTime(_currentCombo);
 			console.log('go!');
 		}
 	}
-	
+
+	this.id = id;
 	this.init = init;
 	this.destroy = destroy;
+	this.finished = _finished;
 	this.start = start;
 };

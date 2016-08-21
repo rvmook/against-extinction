@@ -37,4 +37,5 @@ module.exports = function(){
 	this.init = init;
 	this.moveFired = _moveFired;
 	this.destroy = destroy;
+	this.isOnTime = function(){};
 };

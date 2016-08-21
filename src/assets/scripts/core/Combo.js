@@ -1,4 +1,3 @@
-var Q = require('../libs/kew');
 var Signal = require('../libs/signals');
 
 module.exports = function(moves) {
@@ -58,4 +57,8 @@ module.exports = function(moves) {
 	this.finished = _finished;
 	this.wrong = _wrong;
 	this.updated = _updated;
+	this.getCurrentMove = function() {
+
+		return _currentMove;
+	}
 };

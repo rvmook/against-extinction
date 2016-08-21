@@ -1,47 +1,50 @@
 var sample = require('../utils/sampleArray'),
 	constants = require('./constants'),
-	Q = require('../libs/kew');
+	Signal = require('../libs/signals');
 
 module.exports = function(player, enemy, comboSettings){
+
 
 	var _comboSequence = createComboSequence(
 		comboSettings.total,
 		comboSettings.size
-	);
+	),
+
+	_finished = new Signal();
 
 	function init() {
 
-		return Q.all(
-			player.init(
-				_comboSequence.slice(0),
-				comboSettings.showDelay,
-				comboSettings.hideDelay
-			),
-			enemy.init(
-				_comboSequence.slice(0),
-				comboSettings.showDelay,
-				comboSettings.hideDelay
-			)
-		)
+		player.init(
+			_comboSequence.slice(0),
+			comboSettings.showDelay,
+			comboSettings.hideDelay
+		);
+
+		enemy.init(
+			_comboSequence.slice(0),
+			comboSettings.showDelay,
+			comboSettings.hideDelay
+		);
 	}
 
 	function start() {
 
-		var deferred = Q.defer();
+		player.finished.add(onPlayerFinished);
+		enemy.finished.add(onEnemyFinished);
 
-		player.start()
-			.then(function(){
+		player.start();
+		enemy.start();
 
-				deferred.resolve(player, enemy);
-			});
 
-		enemy.start()
-			.then(function(){
+		function onEnemyFinished(){
 
-				deferred.resolve(enemy, player);
-			});
+			_finished.dispatch(enemy, player);
+		}
 
-		return deferred.promise;
+		function onPlayerFinished(){
+
+			_finished.dispatch(player, enemy);
+		}
 	}
 
 	function createComboSequence(total, size) {
@@ -58,7 +61,16 @@ module.exports = function(player, enemy, comboSettings){
 		return sequence;
 	}
 
+	function destroy() {
+
+		_finished.removeAll();
+		player.destroy();
+		enemy.destroy();
+	}
+
 	this.init = init;
+	this.destroy = destroy;
+	this.finished = _finished;
 	this.start = start;
 };
 
