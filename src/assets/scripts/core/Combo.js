@@ -57,8 +57,13 @@ module.exports = function(moves) {
 	this.finished = _finished;
 	this.wrong = _wrong;
 	this.updated = _updated;
+	this.getMoves = function() {
+
+		return _moves.slice(0);
+	};
+
 	this.getCurrentMove = function() {
 
 		return _currentMove;
-	}
+	};
 };

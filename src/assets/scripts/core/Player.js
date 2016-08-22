@@ -5,6 +5,7 @@ module.exports = function(id, _controller){
 
 	var _isOnTime,
 		_finished = new Signal(),
+		_updated = new Signal(),
 		_showDelay,
 		_hideDelay,
 		_currentComboIndex,
@@ -46,6 +47,8 @@ module.exports = function(id, _controller){
 	function destroy() {
 
 		killTimers();
+		_updated.removeAll();
+		_finished.removeAll();
 		_controller.destroy();
 		_controller.moveFired.remove(onMoveFired);
 	}
@@ -128,7 +131,8 @@ module.exports = function(id, _controller){
 
 			killTimers();
 			_isOnTime = true;
-
+			console.log('dispatch updated');
+			_updated.dispatch(_currentCombo);
 
 			_controller.isOnTime(_currentCombo);
 			console.log('go!');
@@ -139,5 +143,6 @@ module.exports = function(id, _controller){
 	this.init = init;
 	this.destroy = destroy;
 	this.finished = _finished;
+	this.updated = _updated;
 	this.start = start;
 };

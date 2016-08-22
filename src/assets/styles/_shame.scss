@@ -13,6 +13,7 @@ body, html {
 	height: 100%;
 	margin: 0;
 	background-color: #d7fff7;
+	min-width: 768px;
 }
 
 .wrapper {
@@ -112,3 +113,44 @@ canvas {
 	top: 0;
 	left: 0;
 }
+
+.arrow-container {
+
+	position: absolute;
+	z-index: 100;
+
+	left: 0;
+
+	width: 100%;
+	min-width: 768px;
+
+	text-align: center;
+	top: 27.5%;
+	height: 0;
+	opacity: 1;
+
+	transform: translate3d(0, 0, 0);
+	transition: all 450ms;
+
+	&.is-hidden {
+
+		transition: none;
+		opacity: 0;
+		transform: translate3d(0, -50px, 0);
+	}
+}
+
+.arrow {
+
+	display: inline-block;
+	width: 153px;
+	height: 153px;
+	margin: -76px 10px 0;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+.arrow--up { background-image: url(/assets/images/arrow-up.png); }
+.arrow--left { background-image: url(/assets/images/arrow-left.png); }
+.arrow--right { background-image: url(/assets/images/arrow-right.png); }
+.arrow--down { background-image: url(/assets/images/arrow-down.png); }

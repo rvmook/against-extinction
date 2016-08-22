@@ -4,12 +4,13 @@ var HumanController = require('./controllers/HumanController'),
 	Player = require('./core/Player'),
 	globals = require('./core/globals');
 
-var pixiHandler = require('./core/pixiHandler');
+var pixiHandler = require('./core/pixiHandler'),
+	arrowHandler = require('./core/arrowHandler');
 
 pixiHandler.init();
 
 
-var LEVEL_ONE_AI_DELAY = 1500;
+var LEVEL_ONE_AI_DELAY = 1600;
 
 var playerA = new Player('you', new HumanController()),
 	playerB = new Player('CPU', new AIController(LEVEL_ONE_AI_DELAY)),
@@ -21,12 +22,23 @@ var playerA = new Player('you', new HumanController()),
 	});
 
 level1.init();
+playerA.updated.add(onPlayerUpdated);
 level1.finished.add(onFinished);
 level1.start();
+
+
+function onPlayerUpdated(moves) {
+
+	console.log('moves', moves);
+	arrowHandler.update(moves);
+}
+
+
 
 function onFinished(winner, loser) {
 
 	console.log(winner.id, 'won,', loser.id, 'lost');
 
+	arrowHandler.destroy();
 	level1.destroy();
 }
