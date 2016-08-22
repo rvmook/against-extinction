@@ -4,6 +4,10 @@ var HumanController = require('./controllers/HumanController'),
 	Player = require('./core/Player'),
 	globals = require('./core/globals');
 
+var pixiHandler = require('./core/pixiHandler');
+
+pixiHandler.init();
+
 
 var LEVEL_ONE_AI_DELAY = 1500;
 
