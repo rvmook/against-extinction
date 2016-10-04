@@ -21,7 +21,7 @@ exports.update = function(combo) {
 	timeout = setTimeout(
 	function(){
 
-
+	//
 	for(i = 0; i < arrows.length; i++) {
 
 		arrow = arrows[i];
@@ -32,12 +32,3 @@ exports.update = function(combo) {
 	arrowContainerEl.classList.remove('is-hidden');
 	}, 100);
 };
-
-function createArrowEl(modifierClass) {
-
-	var div = document.createElement('div');
-
-	div.className = 'arrow arrow--' + modifierClass;
-
-	return div;
-}

@@ -36,7 +36,9 @@ function init() {
 	// removes the PIXI debug log
 	PIXI.utils._saidHello = true;
 
-	_renderer = PIXI.autoDetectRenderer(_win.innerWidth, _win.innerHeight);
+	_renderer = PIXI.autoDetectRenderer(_win.innerWidth, _win.innerHeight,{
+		resolution:2
+	});
 	_renderer.backgroundColor = 0xd7fff7;
 	document.body.appendChild(_renderer.view);
 

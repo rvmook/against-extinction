@@ -37,7 +37,7 @@ var	styles = {
 	},
 	copyScripts = {
 		src: [
-			'src/assets/scripts/pixi*.js',
+			'src/assets/scripts/*.js',
 			'!src/assets/scripts/main.js'
 		],
 		dest: './dist/assets/scripts'

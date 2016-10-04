@@ -4,8 +4,11 @@ var Signal = require('../libs/signals'),
 module.exports = function(id, _controller){
 
 	var _isOnTime,
+		
 		_finished = new Signal(),
-		_updated = new Signal(),
+		_destroyed = new Signal(),
+		_comboUpdated = new Signal(),
+
 		_showDelay,
 		_hideDelay,
 		_currentComboIndex,
@@ -46,9 +49,12 @@ module.exports = function(id, _controller){
 
 	function destroy() {
 
+		_destroyed.dispatch();
+
 		killTimers();
-		_updated.removeAll();
+		_comboUpdated.removeAll();
 		_finished.removeAll();
+		_destroyed.removeAll();
 		_controller.destroy();
 		_controller.moveFired.remove(onMoveFired);
 	}
@@ -60,8 +66,6 @@ module.exports = function(id, _controller){
 			_currentCombo.executeMove(move);
 
 		} else {
-
-			console.log('too soon!');
 
 			killTimers();
 			_showTimeout = setTimeout(startTimerSequence, _showDelay);
@@ -82,20 +86,21 @@ module.exports = function(id, _controller){
 
 		if(!_currentCombo) {
 
-			console.log('DONE!');
 			_finished.dispatch();
 
 		} else {
 
+			_comboUpdated.dispatch(_currentCombo);
+
 			_currentCombo.finished.add(nextCombo);
 			_currentCombo.wrong.add(onWrong);
+
 			startTimerSequence();
 		}
 	}
 
 	function onWrong(){
 
-		console.log('wrong move!');
 		startCombo();
 	}
 
@@ -131,11 +136,7 @@ module.exports = function(id, _controller){
 
 			killTimers();
 			_isOnTime = true;
-			console.log('dispatch updated');
-			_updated.dispatch(_currentCombo);
-
 			_controller.isOnTime(_currentCombo);
-			console.log('go!');
 		}
 	}
 
@@ -143,6 +144,7 @@ module.exports = function(id, _controller){
 	this.init = init;
 	this.destroy = destroy;
 	this.finished = _finished;
-	this.updated = _updated;
+	this.destroyed = _destroyed;
+	this.comboUpdated = _comboUpdated;
 	this.start = start;
 };

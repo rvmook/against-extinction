@@ -4,6 +4,7 @@ module.exports = function(moves) {
 
 	var _finished = new Signal(),
 		_updated = new Signal(),
+		_started = new Signal(),
 		_wrong = new Signal(),
 		_currentIndex = 0,
 		_currentMove,
@@ -12,9 +13,13 @@ module.exports = function(moves) {
 
 	function start() {
 
-		console.log(moves);
-
 		_currentIndex = 0;
+		_moves.forEach(function(move){
+			move.isExecuted = false;
+		});
+
+		_started.dispatch();
+
 		nextMove();
 	}
 
@@ -23,21 +28,25 @@ module.exports = function(moves) {
 		_currentMove = _moves[_currentIndex];
 		_currentIndex++;
 
-		_updated.dispatch();
-
 		if(!_currentMove) {
 
 			_finished.dispatch();
+
+		} else {
+
+			_updated.dispatch();
 		}
 	}
 
 	function executeMove(firedMove) {
 
-		if(firedMove !== _currentMove) {
+		if(firedMove !== _currentMove.action) {
 
-			_wrong.dispatch();
+			_wrong.dispatch(firedMove);
 
 		} else {
+
+			_currentMove.isExecuted = true;
 
 			nextMove();
 		}
@@ -45,6 +54,7 @@ module.exports = function(moves) {
 
 	function destroy() {
 
+		_started.removeAll();
 		_updated.removeAll();
 		_finished.removeAll();
 		_wrong.removeAll();
@@ -54,6 +64,7 @@ module.exports = function(moves) {
 	this.start = start;
 	this.destroy = destroy;
 
+	this.started = _started;
 	this.finished = _finished;
 	this.wrong = _wrong;
 	this.updated = _updated;

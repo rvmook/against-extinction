@@ -31,7 +31,7 @@ module.exports = function(_delay){
 
 		if(currentMove) {
 
-			_moveFired.dispatch(_currentCombo.getCurrentMove());
+			_moveFired.dispatch(_currentCombo.getCurrentMove().action);
 			_aiTimeout = setTimeout(fireCurrentMove, _delay);
 		}
 	}

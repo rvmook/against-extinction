@@ -1,5 +1,6 @@
 var sample = require('../utils/sampleArray'),
 	constants = require('./constants'),
+	Move = require('./Move'),
 	Signal = require('../libs/signals');
 
 module.exports = function(player, enemy, comboSettings){
@@ -82,7 +83,7 @@ function createComboConfig(size) {
 
 	function createRandomMove() {
 
-		return sample(constants.ALL_MOVES);
+		return new Move(sample(constants.ALL_MOVES));
 	}
 
 	function createMoves() {
