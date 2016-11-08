@@ -3,15 +3,15 @@ var HumanController = require('./controllers/HumanController'),
 	Level = require('./core/Level'),
 	Player = require('./core/Player'),
 	MainComboUi = require('./modules/MainComboUi'),
+	PlayerProgressBar = require('./modules/PlayerProgressBar'),
 	globals = require('./core/globals');
 
-var pixiHandler = require('./core/pixiHandler'),
-	arrowHandler = require('./core/arrowHandler');
+var pixiHandler = require('./core/pixiHandler');
 
 pixiHandler.init();
 
 
-var LEVEL_ONE_AI_DELAY = 500;
+var LEVEL_ONE_AI_DELAY = 1000;
 
 var playerA = new Player('you', new HumanController()),
 	playerB = new Player('CPU', new AIController(LEVEL_ONE_AI_DELAY)),
@@ -22,19 +22,13 @@ var playerA = new Player('you', new HumanController()),
 		hideDelay:globals.comboHideDelay
 	});
 
-var op = new MainComboUi(playerA);
+var playerArrows = new MainComboUi(playerA),
+	playerAProgress = new PlayerProgressBar(playerA, document.querySelector('.js-progressContainer--a')),
+	playerBProgress = new PlayerProgressBar(playerB, document.querySelector('.js-progressContainer--b'));
 
 level1.init();
 level1.finished.add(onFinished);
 level1.start();
-
-
-//
-// function onPlayerUpdated(moves) {
-//
-// 	console.log('moves', moves);
-// 	arrowHandler.update(moves);
-// }
 
 
 
@@ -42,6 +36,5 @@ function onFinished(winner, loser) {
 
 	console.log(winner.id, 'won,', loser.id, 'lost');
 
-	arrowHandler.destroy();
 	level1.destroy();
 }

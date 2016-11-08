@@ -29,15 +29,12 @@ module.exports = function(_player) {
 
 		function onStarted() {
 
-			console.clear();
-			console.log('go!');
 			show();
 		}
 
-		function onWrong(firedAction) {
+		function onWrong() {
 
 			shake();
-			console.log(firedAction + ' is wrong...');
 		}
 
 		function onFinished() {
@@ -56,7 +53,7 @@ module.exports = function(_player) {
 
 				if(move.isExecuted || isNextUp) {
 
-					arrow.focus();
+					arrow.focus(index * 100);
 					isNextUp = move.isExecuted;
 
 				} else {
@@ -115,16 +112,6 @@ function hide() {
 	}
 }
 
-function fireAction(index, action, isCorrect) {
-
-	console.log(index, action, isCorrect);
-}
-
-window.show = show;
-window.hide = hide;
-window.fireAction = fireAction;
-
-
 
 function addArrow(parentEl, move) {
 
@@ -156,16 +143,18 @@ function Arrow(parentEl, move) {
 
 	this.show = function(delay) {
 
-		console.log('show', delay);
 		setTimeout(function(){
 			_div.classList.remove('is-hidden')
-		}, delay);
+		}, delay + 50);
 	};
 	this.hide = function() {
 
 		_div.classList.add('is-hidden');
 	};
-	this.focus = function() { _div.classList.remove('is-blurred'); };
+	this.focus = function() {
+
+		_div.classList.remove('is-blurred')
+	};
 	this.blur = function() { _div.classList.add('is-blurred'); };
 
 	this.dispose = function() {

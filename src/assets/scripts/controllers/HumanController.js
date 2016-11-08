@@ -34,7 +34,7 @@ module.exports = function(){
 
 		_moveFired.removeAll();
 		_moveFired = null;
-		window.removeEventListener('keydown', onKeyUp);
+		window.removeEventListener('keyup', onKeyUp);
 	}
 
 	this.init = init;

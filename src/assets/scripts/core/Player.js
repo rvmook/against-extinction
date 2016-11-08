@@ -81,22 +81,21 @@ module.exports = function(id, _controller){
 
 		_currentCombo = _combos[_currentComboIndex];
 
-		_currentComboIndex++;
-
-
 		if(!_currentCombo) {
 
 			_finished.dispatch();
 
 		} else {
 
-			_comboUpdated.dispatch(_currentCombo);
+			_comboUpdated.dispatch(_currentCombo, _currentComboIndex, _combos.length);
 
 			_currentCombo.finished.add(nextCombo);
 			_currentCombo.wrong.add(onWrong);
 
 			startTimerSequence();
 		}
+
+		_currentComboIndex++;
 	}
 
 	function onWrong(){

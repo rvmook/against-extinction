@@ -130,45 +130,6 @@ canvas {
 	top: 27.5%;
 	height: 0;
 }
-
-.arrow {
-
-	display: inline-block;
-	width: 154px;
-	height: 154px;
-	margin: -76px 10px 0;
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-color: #fff;
-
-	background-blend-mode: normal;
-	opacity: 1;
-
-	border-radius: 50%;
-
-	transform: translate3d(0, 0, 0);
-	transition: all 250ms;
-
-	&.is-blurred {
-
-		background-blend-mode: luminosity;
-		opacity: 0.5;
-	}
-
-	&.is-hidden {
-
-		transition: none;
-		opacity: 0;
-		transform: translate3d(0, -50px, 0);
-	}
-}
-
-
-.arrow--up { background-image: url(/assets/images/arrow-up.png); }
-.arrow--left { background-image: url(/assets/images/arrow-left.png); }
-.arrow--right { background-image: url(/assets/images/arrow-right.png); }
-.arrow--down { background-image: url(/assets/images/arrow-down.png); }
-
 @keyframes shake {
 	10%, 30%, 50%, 70%, 90% {
 		transform: translate3d(-5px, 0, 0);

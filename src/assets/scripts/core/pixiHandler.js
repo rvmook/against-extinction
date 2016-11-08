@@ -56,8 +56,6 @@ function init() {
 			.add('/assets/images/sprites/trex-1.json')
 			.load(onSpritesLoaded);
 
-
-
 		animate();
 	}
 
