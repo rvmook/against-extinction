@@ -8,14 +8,18 @@ var _renderer,
 
 function onResize() {
 
-	_stage.filterArea = new PIXI.Rectangle(0,0,_win.innerWidth, _win.innerHeight);
-	_renderer.resize(_win.innerWidth, _win.innerHeight);
+	var width = Math.max(768, _win.innerWidth);
 
-	_container.x = _win.innerWidth / 2;
+	_stage.filterArea = new PIXI.Rectangle(0,0,width, _win.innerHeight);
+	_renderer.resize(width, _win.innerHeight);
+
+
+
+	_container.x = width / 2;
 	_container.y = _win.innerHeight * 0.8;
 
-	var mcOffset = _win.innerWidth * 0.3,
-		strokeOffset = _win.innerWidth * 0.45;
+	var mcOffset = width * 0.3,
+		strokeOffset = width * 0.45;
 
 	_mcTrex.x = -mcOffset;
 	_mcTurtle.x = mcOffset;
@@ -32,7 +36,9 @@ function init() {
 	// removes the PIXI debug log
 	PIXI.utils._saidHello = true;
 
-	_renderer = PIXI.autoDetectRenderer(_win.innerWidth, _win.innerHeight);
+	_renderer = PIXI.autoDetectRenderer(_win.innerWidth, _win.innerHeight,{
+		resolution:2
+	});
 	_renderer.backgroundColor = 0xd7fff7;
 	document.body.appendChild(_renderer.view);
 
@@ -49,8 +55,6 @@ function init() {
 			.add('/assets/images/sprites/trex-0.json')
 			.add('/assets/images/sprites/trex-1.json')
 			.load(onSpritesLoaded);
-
-
 
 		animate();
 	}

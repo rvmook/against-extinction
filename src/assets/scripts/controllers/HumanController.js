@@ -7,10 +7,10 @@ module.exports = function(){
 
 	function init() {
 
-		window.addEventListener('keydown', onKeyDown);
+		window.addEventListener('keyup', onKeyUp);
 	}
 
-	function onKeyDown(e) {
+	function onKeyUp(e) {
 
 		var move;
 
@@ -24,14 +24,17 @@ module.exports = function(){
 			case 39: move = constants.MOVE_RIGHT; break;
 		}
 
-		_moveFired.dispatch(move);
+		if(move) {
+
+			_moveFired.dispatch(move);
+		}
 	}
 
 	function destroy() {
 
 		_moveFired.removeAll();
 		_moveFired = null;
-		window.removeEventListener('keydown', onKeyDown);
+		window.removeEventListener('keyup', onKeyUp);
 	}
 
 	this.init = init;

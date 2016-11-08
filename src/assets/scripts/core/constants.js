@@ -1,8 +1,8 @@
-var MOVE_UP = 'MOVE_UP',
-	MOVE_ENTER = 'MOVE_ENTER',
-	MOVE_DOWN = 'MOVE_DOWN',
-	MOVE_LEFT = 'MOVE_LEFT',
-	MOVE_RIGHT = 'MOVE_RIGHT';
+var MOVE_UP = 'up',
+	MOVE_ENTER = 'enter',
+	MOVE_DOWN = 'down',
+	MOVE_LEFT = 'left',
+	MOVE_RIGHT = 'right';
 
 exports.MOVE_ENTER = MOVE_ENTER;
 exports.MOVE_UP = MOVE_UP;
